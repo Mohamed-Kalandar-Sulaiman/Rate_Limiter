@@ -1,0 +1,45 @@
+services:
+- name: identity
+  id: 1
+  actions:
+  - name: login
+    id: 1
+    rate_limit:
+    - name: default
+      unit: minutes
+      request_per_unit: 3
+      algorithm: fixed_window
+
+    - name: basic
+      unit: minutes
+      request_per_unit: 10
+      algorithm: sliding_window
+
+    - name: premium
+      unit: hours
+      request_per_unit: 20
+      algorithm: fixed_window
+
+  - name: signUp
+    id: 2
+    rate_limit:
+    - name: default
+      unit: hours
+      request_per_unit: 5
+      algorithm: fixed_window
+
+  - name: changePassword
+    id: 3
+    rate_limit:
+    - name: default
+      unit: hours
+      request_per_unit: 100
+      algorithm: fixed_window
+
+  - name: forgotPassword
+    id: 4
+    rate_limit:
+    - name: default
+      unit: hours
+      request_per_unit: 5
+      algorithm: fixed_window
