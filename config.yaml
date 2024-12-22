@@ -7,16 +7,19 @@ services:
     rate_limit:
     - name: default
       unit: minutes
+      unit_multiplier: 2
       request_per_unit: 3
       algorithm: fixed_window
 
     - name: basic
       unit: minutes
+      unit_multiplier: 1
       request_per_unit: 10
       algorithm: sliding_window
 
     - name: premium
       unit: hours
+      unit_multiplier: 1
       request_per_unit: 20
       algorithm: fixed_window
 
@@ -25,7 +28,8 @@ services:
     rate_limit:
     - name: default
       unit: hours
-      request_per_unit: 5
+      unit_multiplier: 1
+      request_per_unit: 2
       algorithm: fixed_window
 
   - name: changePassword
@@ -33,7 +37,8 @@ services:
     rate_limit:
     - name: default
       unit: hours
-      request_per_unit: 100
+      unit_multiplier: 1
+      request_per_unit: 1
       algorithm: fixed_window
 
   - name: forgotPassword
@@ -41,5 +46,39 @@ services:
     rate_limit:
     - name: default
       unit: hours
-      request_per_unit: 5
+      unit_multiplier: 1
+      request_per_unit: 1
       algorithm: fixed_window
+
+  - name: disscord
+    id: 2
+    actions:
+    - name: sendMessage
+      id: 1
+      rate_limit:
+      - name: default
+        unit: minutes
+        unit_multiplier: 1
+        request_per_unit: 60
+        algorithm: fixed_window
+
+      - name: nitro
+        unit: minutes
+        unit_multiplier: 1
+        request_per_unit: 120
+        algorithm: sliding_window
+
+    - name: changeGroupName
+      id: 2
+      rate_limit:
+      - name: default
+        unit: hours
+        unit_multiplier: 1
+        request_per_unit: 1
+        algorithm: fixed_window
+
+      - name: nitro
+        unit: minutes
+        unit_multiplier: 1
+        request_per_unit: 2
+        algorithm: sliding_window

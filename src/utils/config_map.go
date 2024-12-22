@@ -11,15 +11,16 @@ import (
 // RateLimitConfig represents the rate limit configuration for a specific plan.
 type RateLimitConfig struct {
 	Name           string `yaml:"name"`
-	Unit           string    `yaml:"unit"`
+	Unit           string `yaml:"unit"`
 	RequestPerUnit int    `yaml:"request_per_unit"`
 	Algorithm      string `yaml:"algorithm"`
+	Multiplier 	   int    `yaml:"unit_multiplier"`
 }
 
 // ActionConfig represents a specific action within a service.
 type ActionConfig struct {
-	Name      string           `yaml:"name"`
-	ID        int              `yaml:"id"`
+	Name      string            `yaml:"name"`
+	ID        int               `yaml:"id"`
 	RateLimit []RateLimitConfig `yaml:"rate_limit"`
 }
 

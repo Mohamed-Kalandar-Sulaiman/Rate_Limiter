@@ -8,11 +8,11 @@ import (
 )
 
 
-func ConvertUnitToTTL(unit string) (time.Duration, error) {
+func  ConvertUnitToTTL(unit string, multiplier int ) (time.Duration, error) {
 	var ttl time.Duration
 	switch unit {
 	case "seconds":
-		ttl = time.Second
+		ttl = time.Second 
 	case "minutes":
 		ttl = time.Minute
 	case "hours":
@@ -20,6 +20,7 @@ func ConvertUnitToTTL(unit string) (time.Duration, error) {
 	default:
 		return 0, fmt.Errorf("unsupported unit: %v", unit)
 	}
+	ttl = ttl * time.Duration(multiplier)
 	return ttl, nil
 }
 
@@ -27,7 +28,7 @@ func ConvertUnitToTTL(unit string) (time.Duration, error) {
 
 
 type RateLimiter interface {
-	RateLimitFunction(key, unit string, requestPerUnit int) (bool, int, int, int64, int64, error)
+	RateLimitFunction(key, unit string, requestPerUnit , multiplier int ) (bool, int, int, int64, int64, error)
 }
 
 type FixedWindowRateLimiter struct {
@@ -49,7 +50,7 @@ func NewSlidingWindowRateLimiter(repo *repository.RateLimiterRepository) *Slidin
 
 
 
-func (r *FixedWindowRateLimiter) RateLimitFunction(key, unit string, requestPerUnit int) (bool, int, int, int64, int64, error) {
+func (r *FixedWindowRateLimiter) RateLimitFunction(key, unit string, requestPerUnit, multiplier  int) (bool, int, int, int64, int64, error) {
 	  //   isAllowed , limit, remaining, reset , reset_after ,err 
 	isAllowed   := false
 	limit       := requestPerUnit
@@ -58,7 +59,7 @@ func (r *FixedWindowRateLimiter) RateLimitFunction(key, unit string, requestPerU
 	count  ,      _ := r.repo.Get(key)
 
 	if   count == -1 {
-		ttl, _ := ConvertUnitToTTL(unit)
+		ttl, _ := ConvertUnitToTTL(unit,multiplier) 
 		count, err := r.repo.Set(key, 1, ttl)
 		if err != nil{
 			fmt.Println("error occured while setting ", count)
@@ -94,9 +95,9 @@ func (r *FixedWindowRateLimiter) RateLimitFunction(key, unit string, requestPerU
 
 
 
-func (r *SlidingWindowRateLimiter) RateLimitFunction(key, unit string, requestPerUnit int) (bool, int, int, int64, int64, error) {
+func (r *SlidingWindowRateLimiter) RateLimitFunction(key, unit string, requestPerUnit , multiplier int) (bool, int, int, int64, int64, error) {
 	now := time.Now().Unix()
-	ttl, err := ConvertUnitToTTL(unit)
+	ttl, err := ConvertUnitToTTL(unit, multiplier)
 	if err != nil {
 		fmt.Println("Error:", err)
 	} 

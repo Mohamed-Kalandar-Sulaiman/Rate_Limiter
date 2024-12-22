@@ -50,10 +50,11 @@ func (s *RateLimiterServer) GetApplicationLayerRateLimit(ctx context.Context, re
 		}
 		return response, status.Error(codes.Internal, "Rate Limit error")
 	}
-
-	isAllowed , limit, remaining, reset , reset_after ,err := limiter.RateLimitFunction(		key,
+	redis_key :=  fmt.Sprintf("%d:%d:%s:%s:%s", config.ServiceID, config.ActionID, config.ConfigID,req.Uid, req.Oid)
+	isAllowed , limit, remaining, reset , reset_after ,err := limiter.RateLimitFunction(		redis_key,
 																								config.RateLimitConfig.Unit,
 																								config.RateLimitConfig.RequestPerUnit,
+																								config.RateLimitConfig.Multiplier,
 																								)
  	
     if err != nil{
